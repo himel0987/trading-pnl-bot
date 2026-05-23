@@ -81,8 +81,9 @@ def get_binance_futures_trades():
     try:
         positions = binance_client.futures_position_information()
         for p in positions:
-            trades[p["symbol"]] = p
-        logger.info(f"Binance Futures: {len(trades)} position(s) fetched")
+            if float(p.get("positionAmt", 0)) != 0:
+                trades[p["symbol"]] = p
+        logger.info(f"Binance Futures: {len(trades)} active position(s)")
     except Exception as e:
         logger.error(f"Binance Futures error: {e}")
     return trades
